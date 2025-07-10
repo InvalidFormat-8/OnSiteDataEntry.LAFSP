@@ -227,11 +227,11 @@ class SpongeLoggerApp:
 
 
     # Save to CSV
-def build_save_button(self):
+    def build_save_button(self):
      ttk.Button(self.root, text="💾 Save Entry", command=self.save_all_data).pack(pady=10)
 
-def save_all_data(self):
-    data = {
+    def save_all_data(self):
+        data = {
         "DATE": self.date_var.get(),
         "STATE": self.state_var.get(),
         "SITE": self.site_var.get(),
@@ -250,38 +250,38 @@ def save_all_data(self):
         "MEGASCLERE": self.megasclere_var.get(),
         "SPECIES": self.species_id_var.get(),
         "FIELD_LOCKED": "TRUE" if self.mode.get() == "field" else "FALSE"
-    }
+        }
 
-    # Water chemistry
-    if self.mode.get() == "field":
-        for k, v in self.water_field_vars.items():
-            data[f"{k.upper()}_FIELD"] = v.get()
-    else:
-        for k, v in self.water_lab_vars.items():
-            data[f"{k.upper()}_LAB"] = v.get()
+        # Water chemistry
+        if self.mode.get() == "field":
+            for k, v in self.water_field_vars.items():
+                data[f"{k.upper()}_FIELD"] = v.get()
+        else:
+            for k, v in self.water_lab_vars.items():
+                data[f"{k.upper()}_LAB"] = v.get()
 
-    # Species observed
-    for k, var in self.species_vars.items():
-        data[k] = "X" if var.get() else ""
-
-    # DNA sequencing
-    if self.mode.get() == "lab" and self.id_type_var.get() == "DNA":
-        data["SEQ.TYPE"] = self.seq_type_var.get()
-        data["GEN.DEP"] = self.genbank_var.get()
-        data["ACC"] = self.acc_num_var.get()
-
-    # Save to CSV
-    file_exists = os.path.exists("field_data.csv")
-    try:
-        with open("field_data.csv", "a", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=data.keys())
-            if not file_exists:
-                writer.writeheader()
-            writer.writerow(data)
-        messagebox.showinfo("Saved", f"✅ Sample {data['SAM.NUMB']} saved.")
-        self.sample_count += 1
-    except Exception as e:
-        messagebox.showerror("Error", f"❌ Failed to save: {e}")
+        # Species observed
+        for k, var in self.species_vars.items():
+            data[k] = "X" if var.get() else ""
+    
+        # DNA sequencing
+        if self.mode.get() == "lab" and self.id_type_var.get() == "DNA":
+            data["SEQ.TYPE"] = self.seq_type_var.get()
+            data["GEN.DEP"] = self.genbank_var.get()
+            data["ACC"] = self.acc_num_var.get()
+    
+        # Save to CSV
+        file_exists = os.path.exists("field_data.csv")
+        try:
+            with open("field_data.csv", "a", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=data.keys())
+                if not file_exists:
+                    writer.writeheader()
+                writer.writerow(data)
+            messagebox.showinfo("Saved", f"✅ Sample {data['SAM.NUMB']} saved.")
+            self.sample_count += 1
+        except Exception as e:
+            messagebox.showerror("Error", f"❌ Failed to save: {e}")
 
 
 # Startup
